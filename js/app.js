@@ -14,7 +14,7 @@ var playerHeadRadius = 20,
     playerBodyLength = 30,
     playerArmLength = 20,
     playerArmSeparationAngle = 45,
-    playerLegLength = 25,
+    playerLegLength = 20,
     playerStartX,
     playerArmStartY,
     playerArmJoint

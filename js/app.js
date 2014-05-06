@@ -35,13 +35,13 @@ function createScrollerWindow() {
     var drawingGrid = paper.rect(0, 0, adjustedPaperWidth, paperHeight, 5);
     drawingGrid.attr({fill: "#fff", stroke: "#000"});
 
+
+    var scrollerBaseline = paperHeight/2 + playerBodyLength + playerHeadRadius*2;
+    // First, draw the baseline
+    paper.path("M0 "+ scrollerBaseline+"L"+adjustedPaperWidth+" "+scrollerBaseline);
     var player = createPlayer(paper, drawingGrid, adjustedPaperWidth, paperHeight);
 
     drawingGrid.mousemove(grab);
-
-    var scrollerBaseline = paperHeight - 50;
-    // First, draw the baseline
-    paper.path("M0 "+ scrollerBaseline+"L"+adjustedPaperWidth+" "+scrollerBaseline);
 
     var enemies = [];
 

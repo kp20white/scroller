@@ -12,8 +12,8 @@ var scroller,
 
 var playerHeadRadius = 20,
     playerBodyLength = 30,
-    playerArmLength = 20,
-    playerArmSeparationAngle = 45,
+    playerArmLength = 30,
+    playerArmSeparationAngle = 60,
     playerLegLength = 20,
     playerStartX,
     playerArmStartY,
@@ -46,17 +46,18 @@ function createScrollerWindow() {
     var enemies = [];
 
     var defaultEnemySquareWidth = "30";
-//    for(var x = 1; x <= 10; x++) {
-//        (function(x) {
-//            window.setTimeout(function () {
-//                if (x % 2 == 0) {
-//                    createEnemySquare(paper, {"width": defaultEnemySquareWidth, "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}});
-//                } else {
-//                    createEnemyCircle(paper, {"radius": "15", "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}});
-//                }
-//            }, 3000 * x);
-//        })(x);
-//    }
+    createEnemyCircle(paper, {"radius": "15", "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}});
+    for(var x = 1; x <= 20; x++) {
+        (function(x) {
+            window.setTimeout(function () {
+                if (x % 2 == 0) {
+                    createEnemySquare(paper, {"width": defaultEnemySquareWidth, "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}});
+                } else {
+                    createEnemyCircle(paper, {"radius": "15", "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}});
+                }
+            }, 3000 * x);
+        })(x);
+    }
 
 }
 
@@ -96,17 +97,6 @@ function createPlayer(paper, playerGrid, paperWidth, paperHeight) {
     playerBody.attr({"stroke-width": "3"});
     playerLeftArm.attr({"stroke-width": "2"});
     playerRightArm.attr({"stroke-width": "2"});
-    (function(centerX, centerY) {
-        playerGrid.mousemove(function(evt) {
-            var grabTargetX = (evt.clientX - paperWidthOffset) - centerX,
-                grabTargetY = (paperHeightOffset + evt.clientY) - centerY,
-                grabTargetAngle = Math.atan2(grabTargetY, grabTargetX);
-            ;
-//            console.log("eventX: " + evt.clientX + " eventY: " + evt.clientY + " tx: " + paperWidthOffset + " ty: " + paperHeightOffset + " centerX: " + centerX + " centerY: " + centerY);
-            playerLeftArm.transform("r"+radians2degrees(grabTargetAngle)+","+centerX+","+centerY);
-            playerRightArm.transform("r"+(radians2degrees(grabTargetAngle - Math.PI) - playerArmSeparationAngle)+","+centerX+","+centerY);
-        });
-    })(playerStartX, playerArmStartY);
 
     playerLeftLeg.attr({"stroke-width": "2"});
     playerRightLeg.attr({"stroke-width": "2"});
@@ -118,6 +108,49 @@ function createPlayer(paper, playerGrid, paperWidth, paperHeight) {
         playerLeftLeg,
         playerRightLeg
     );
+
+    (function(centerX, centerY) {
+        var inClick = false;
+        playerGrid.mousemove(function(evt) {
+            var rotationAngleRadians = Math.PI; //PI == 1 radian
+            if ((evt.clientX - paperWidthOffset) < centerX) {
+                rotationAngleRadians =  (-1 * Math.PI) - Math.PI;
+            }
+
+            if (!inClick) {
+                playerLeftArm.transform("r" + (radians2degrees(rotationAngleRadians + Math.PI / 2) + playerArmSeparationAngle) + "," + centerX + "," + centerY);
+                playerRightArm.transform("r" + (radians2degrees(rotationAngleRadians + Math.PI / 2) - playerArmSeparationAngle) + "," + centerX + "," + centerY);
+            }
+            console.log("fart");
+        });
+
+        var kaiblast;
+        playerGrid.dblclick(function(evt) {
+            var kaiblastRadius = playerHeadRadius * 1.5;
+            kaiblast = paper.circle(playerStartX+50, playerArmStartY, kaiblastRadius);
+            kaiblast.attr({"fill": "#b6c6f9", "stroke-width": "2"});
+            kaiblast.animate({"fill": "#22f"}, 250);
+            window.setTimeout(function() {
+               kaiblast.animate({cx: paperWidth+kaiblastRadius, "fill": "#b6c6f9"}, 2000)
+            }, 500);
+        });
+
+        /** Got some work to do on jumping
+         *
+        playerGrid.click(function(evt) {
+            if (!inDblClick) {
+
+            inClick = true;
+            console.log("dookie");
+            player.transform("t0,-100...");
+            window.setTimeout(function() {
+                player.transform("t0,0"+player.transform());
+                inClick = false;
+            }, 200);
+            }
+        });
+         */
+    })(playerStartX, playerArmStartY);
     return player;
 }
 

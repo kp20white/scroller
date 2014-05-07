@@ -110,29 +110,28 @@ function createPlayer(paper, playerGrid, paperWidth, paperHeight) {
     );
 
     (function(centerX, centerY) {
-        var inClick = false;
+        var rotationAngleRadians; //PI == 1 radian
         playerGrid.mousemove(function(evt) {
-            var rotationAngleRadians = Math.PI; //PI == 1 radian
             if ((evt.clientX - paperWidthOffset) < centerX) {
-                rotationAngleRadians =  (-1 * Math.PI) - Math.PI;
+                rotationAngleRadians =  (-2 * Math.PI);
+            } else {
+                rotationAngleRadians = Math.PI;
             }
 
-            if (!inClick) {
-                playerLeftArm.transform("r" + (radians2degrees(rotationAngleRadians + Math.PI / 2) + playerArmSeparationAngle) + "," + centerX + "," + centerY);
-                playerRightArm.transform("r" + (radians2degrees(rotationAngleRadians + Math.PI / 2) - playerArmSeparationAngle) + "," + centerX + "," + centerY);
-            }
-            console.log("fart");
+            playerLeftArm.transform("r" + (radians2degrees(rotationAngleRadians + Math.PI / 2) + playerArmSeparationAngle) + "," + centerX + "," + centerY);
+            playerRightArm.transform("r" + (radians2degrees(rotationAngleRadians + Math.PI / 2) - playerArmSeparationAngle) + "," + centerX + "," + centerY);
         });
 
         var kaiblast;
         playerGrid.dblclick(function(evt) {
             var kaiblastRadius = playerHeadRadius * 1.5;
-            kaiblast = paper.circle(playerStartX+50, playerArmStartY, kaiblastRadius);
+            var kaiblastStartX = playerStartX + (rotationAngleRadians < 0 ? -50 : 50);
+            kaiblast = paper.circle(kaiblastStartX, playerArmStartY, kaiblastRadius);
             kaiblast.attr({"fill": "#b6c6f9", "stroke-width": "2"});
             kaiblast.animate({"fill": "#22f"}, 250);
             window.setTimeout(function() {
-               kaiblast.animate({cx: paperWidth+kaiblastRadius, "fill": "#b6c6f9"}, 2000)
-            }, 500);
+               kaiblast.animate({cx: rotationAngleRadians < 0 ? 0 - kaiblastRadius : paperWidth+kaiblastRadius, "fill": "#b6c6f9"}, 2000)
+            }, 400);
         });
 
         /** Got some work to do on jumping

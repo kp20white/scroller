@@ -20,6 +20,8 @@ var playerHeadRadius = 20,
     playerArmJoint
 ;
 
+var enemies = [];
+
 function createScrollerWindow() {
     scroller = $('.scroller-canvas'),
     paperWidth = parseInt(scroller.css('width')),
@@ -43,20 +45,20 @@ function createScrollerWindow() {
 
     drawingGrid.mousemove(grab);
 
-    var enemies = [];
 
     var defaultEnemySquareWidth = "30";
-    createEnemyCircle(paper, {"radius": "15", "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}});
-    for(var x = 1; x <= 20; x++) {
+    enemies.push(createEnemyCircle(paper, {"radius": "15", "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}}));
+    for(var x = 1; x <= 10; x++) {
         (function(x) {
             window.setTimeout(function () {
                 if (x % 2 == 0) {
-                    createEnemySquare(paper, {"width": defaultEnemySquareWidth, "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}});
+                    enemies.push(createEnemySquare(paper, {"width": defaultEnemySquareWidth, "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}}));
                 } else {
-                    createEnemyCircle(paper, {"radius": "15", "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}});
+                    enemies.push(createEnemyCircle(paper, {"radius": "15", "verticalBaseline": scrollerBaseline, "horizontalBoundary": { "right": adjustedPaperWidth, "left": (-2 * defaultEnemySquareWidth)}}));
                 }
             }, 3000 * x);
         })(x);
+       console.log(enemies);
     }
 
 }
@@ -65,7 +67,10 @@ function createEnemySquare(paper, enemyDimensions) {
     var enemySquareHeight = enemySquareWidth = parseInt(enemyDimensions.width);
     var enemySquare = paper.rect(enemyDimensions.horizontalBoundary.right+enemySquareWidth, enemyDimensions.verticalBaseline - (enemySquareHeight+2), enemySquareWidth, enemySquareHeight);
     enemySquare.attr({"stroke-width": "3"});
-    enemySquare.animate({x: enemyDimensions.horizontalBoundary.left}, 5000);
+    enemySquare.animate({x: enemyDimensions.horizontalBoundary.left}, 3000, function() {
+        this.remove();
+    });
+    return enemySquare;
 }
 
 function createEnemyCircle(paper, enemyDimensions) {
@@ -73,7 +78,10 @@ function createEnemyCircle(paper, enemyDimensions) {
         enemyCircleDiameter = enemyCircleRadius*2;
     var enemyCircle = paper.circle(enemyDimensions.horizontalBoundary.right+enemyCircleDiameter, enemyDimensions.verticalBaseline - (enemyCircleRadius), enemyCircleRadius)
     enemyCircle.attr({"stroke-width": "3"});
-    enemyCircle.animate({cx: enemyDimensions.horizontalBoundary.left}, 5000);
+    enemyCircle.animate({cx: enemyDimensions.horizontalBoundary.left}, 3000, function() {
+        this.remove();
+    });
+    return enemyCircle;
 }
 
 /**

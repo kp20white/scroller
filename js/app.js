@@ -138,7 +138,7 @@ function createPlayer(paper, playerGrid, paperWidth, paperHeight) {
             kaiblast.attr({"fill": "#b6c6f9", "stroke-width": "2"});
             kaiblast.animate({"fill": "#22f"}, 250);
             window.setTimeout(function() {
-               kaiblast.animate({cx: rotationAngleRadians < 0 ? 0 - kaiblastRadius : paperWidth+kaiblastRadius, "fill": "#b6c6f9"}, 2000)
+               kaiblast.animate({cx: rotationAngleRadians < 0 ? 0 - kaiblastRadius : paperWidth+kaiblastRadius, "fill": "#b6c6f9"}, 1000)
             }, 400);
         });
 
